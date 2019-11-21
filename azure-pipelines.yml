@@ -36,3 +36,9 @@ steps:
   displayName: 'pytest'
 
 - script: python hello_app/__init__.
+
+- script: |
+    pip install pytest
+    pip install pytest-cov
+    pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+  displayName: 'Test with pytest'
