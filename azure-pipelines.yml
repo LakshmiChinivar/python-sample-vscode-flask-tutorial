@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'macOS-10.13'
+  vmImage: 'ubuntu-16.04'
 strategy:
   matrix:
     Python27:
@@ -22,8 +22,13 @@ strategy:
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+    versionSpec: '3.6'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFiles: '**/test-*.xml'
+    testRunTitle: 'Publish test results for Python $(python.version)'
 
 - script: |
     python -m pip install --upgrade pip
@@ -42,3 +47,6 @@ steps:
     pip install pytest-cov
     pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
   displayName: 'Test with pytest'
+
+- script: python -m pip install --upgrade pip setuptools wheel
+  displayName: 'Install tools'
